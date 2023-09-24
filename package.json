@@ -1,0 +1,49 @@
+{
+  "name": "supesquire",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.14.3",
+    "@mui/material": "^5.14.4",
+    "@supabase/auth-helpers-nextjs": "^0.7.4",
+    "@supabase/auth-ui-react": "^0.4.2",
+    "@supabase/auth-ui-shared": "^0.1.6",
+    "@supabase/supabase-js": "^2.32.0",
+    "crypto-js": "^4.1.1",
+    "date-fns": "^2.30.0",
+    "eslint-config-next": "13.4.13",
+    "js-cookie": "^3.0.5",
+    "langchain": "^0.0.125",
+    "next": "13.4.13",
+    "openai": "^3.3.0",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^3.9.179",
+    "prettier": "^3.0.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-dropzone": "^14.2.3",
+    "react-loader-spinner": "^5.3.4",
+    "react-markdown": "^8.0.7",
+    "react-syntax-highlighter": "^15.5.0",
+    "react-toastify": "^9.1.3",
+    "react-window": "^1.8.9",
+    "sharp": "^0.32.5",
+    "sqlstring": "^2.3.3",
+    "typewriter-effect": "^2.20.1"
+  },
+  "devDependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
+    "encoding": "^0.1.13",
+    "eslint": "^8.46.0",
+    "raw-loader": "^4.0.2"
+  }
+}

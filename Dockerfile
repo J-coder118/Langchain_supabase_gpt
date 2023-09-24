@@ -1,0 +1,47 @@
+FROM node:18.16.1-alpine3.18 as base
+
+FROM base as deps
+RUN apk add --no-cache libc6-compat python3 pkgconfig make g++ gcc libtool autoconf automake jpeg-dev cairo-dev pango-dev giflib-dev build-base libpng-dev nasm
+WORKDIR /app
+COPY package.json yarn.lock /app
+RUN yarn add canvas@2.6.1
+RUN yarn --frozen-lockfile
+
+FROM base as builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ARG NEXT_PUBLIC_SUPABASE_URL
+ARG NEXT_PUBLIC_SUPABASE_API_KEY
+ARG NEXT_PUBLIC_SUPABASE_BUCKET
+ARG NEXT_PUBLIC_SUPABASE_DOCUMENTS_TABLE
+ARG NEXT_PUBLIC_SUPABASE_CHAT_RECORDS_TABLE
+ARG NEXT_PUBLIC_SUPABASE_DOCUMENT_CHUNKS_TABLE
+ARG NEXT_PUBLIC_ORIGIN
+ARG NEXT_PUBLIC_OPENAI_API_KEY
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_API_KEY=$NEXT_PUBLIC_SUPABASE_API_KEY
+ENV NEXT_PUBLIC_SUPABASE_BUCKET=$NEXT_PUBLIC_SUPABASE_BUCKET
+ENV NEXT_PUBLIC_SUPABASE_DOCUMENTS_TABLE=$NEXT_PUBLIC_SUPABASE_DOCUMENTS_TABLE
+ENV NEXT_PUBLIC_SUPABASE_CHAT_RECORDS_TABLE=$NEXT_PUBLIC_SUPABASE_CHAT_RECORDS_TABLE
+ENV NEXT_PUBLIC_SUPABASE_DOCUMENT_CHUNKS_TABLE=$NEXT_PUBLIC_SUPABASE_DOCUMENT_CHUNKS_TABLE
+ENV NEXT_PUBLIC_ORIGIN=$NEXT_PUBLIC_ORIGIN
+ENV NEXT_PUBLIC_OPENAI_API_KEY=$NEXT_PUBLIC_OPENAI_API_KEY
+RUN yarn build
+
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV production
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+USER nextjs
+EXPOSE 3000
+ENV PORT 3000
+ENV HOSTNAME localhost
+ENV NEXT_TELEMETRY_DISABLED 1
+
+CMD ["node", "server.js"]
